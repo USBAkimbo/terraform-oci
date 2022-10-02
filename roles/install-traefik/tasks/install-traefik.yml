@@ -1,0 +1,42 @@
+- name: Create Traefik directory
+  file:
+    path: /opt/dockervolumes/traefik
+    state: directory
+    recurse: yes
+
+- name: Create Traefik proxy network
+  docker_network:
+    name: proxy
+
+- name: Starting Traefik container
+  docker_container:
+    name: traefik
+    image: traefik
+    state: started
+    restart_policy: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/dockervolumes/traefik/letsencrypt:/letsencrypt
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - name: proxy
+    command:
+      # Tell Traefik to discover containers using the Docker API
+      - --providers.docker=true
+      # Don't expose containers unless they have a label
+      - --providers.docker.exposedbydefault=false
+      # Set up LetsEncrypt using HTTP challenge
+      - --certificatesresolvers.cloudflare.acme.httpchallenge.entrypoint=web
+      # Set email and LE storage directory
+      - --certificatesresolvers.cloudflare.acme.email={{ email }}
+      - --certificatesresolvers.cloudflare.acme.storage=/letsencrypt/acme.json
+      # Set up an insecure listener that redirects all traffic to TLS
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      # Set up the TLS configuration for our websecure listener
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls.certResolver=cloudflare

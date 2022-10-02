@@ -1,0 +1,41 @@
+- name: Create Filebrowser directory
+  file:
+    path: /opt/dockervolumes/filebrowser
+    state: directory
+    recurse: yes
+
+- name: Create share directory
+  file:
+    path: /opt/share
+    state: directory
+    recurse: yes
+
+- name: Checking Filebrowser DB exists
+  stat:
+    path: /opt/dockervolumes/filebrowser/filebrowser.db
+  register: filebrowser_db_exists
+
+- name: Creating Filebrowser DB if it's missing
+  file:
+    path: /opt/dockervolumes/filebrowser/filebrowser.db
+    state: touch
+  when: not filebrowser_db_exists.stat.exists
+
+- name: Starting Filebrowser container
+  docker_container:
+    name: filebrowser
+    image: filebrowser/filebrowser
+    state: started
+    restart_policy: unless-stopped
+    volumes:
+      - /opt/share:/srv
+      - /opt/dockervolumes/filebrowser/filebrowser.db:/database.db
+    ports:
+      - 81:80
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.traefik.rule: "Host(`{{ dns_name }}`)"
+      traefik.http.routers.traefik.entrypoints: "websecure"
+      traefik.http.routers.traefik.tls.certresolver: "cloudflare"
+    networks:
+      - name: proxy

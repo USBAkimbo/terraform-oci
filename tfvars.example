@@ -1,0 +1,29 @@
+# Account info
+tenancy_ocid               = "xxxx"
+user_ocid                  = "xxxx"
+fingerprint                = "xxxx"
+compartment_ocid           = "xxxx"
+private_key_path           = "/home/user/.oci/oci-priv.pem"
+public_key_path            = "/home/user/.oci/oci-pub.pem"
+region                     = "uk-london-1"
+availability_domain        = "IIdQ:UK-LONDON-1-AD-2"
+availability_domain_number = "2"
+
+# Compute
+vm_name     = "oc-vm1"
+vm_shape    = "VM.Standard.E2.1.Micro"
+vm_ocpus    = "1"
+vm_ram      = "1"
+vm_os_image = "ocid1.image.oc1.uk-london-1.aaaaaaaaapng5umnhjegcjwxhqwzms6fmb7hcksxavz2xzv4queab3jbyq7a" # August 2022 image - https://docs.oracle.com/en-us/iaas/images/all/?search=ubuntu
+ssh_key     = "xxxx" # SSH public key
+
+# Networking
+net_vcn_name    = "vcn"
+net_subnet_name = "vcn-sub"
+net_cidr_block  = "10.10.0.0/16"
+net_subnet      = "10.10.12.0/24"
+
+# Cloudflare vars
+cf_api_token = "xxxx"
+cf_zone_id   = "xxxx"
+cf_dns_record = "filebrowser-cloud"

@@ -1,0 +1,15 @@
+- name: Install Docker
+  apt:
+    name: docker
+    state: latest
+
+- name: Install Docker Compose
+  apt:
+    name: docker-compose
+    state: latest
+
+- name: Create docker volumes directory
+  file:
+    path: /opt/dockervolumes
+    state: directory
+    recurse: yes
