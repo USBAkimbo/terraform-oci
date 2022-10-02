@@ -2,6 +2,11 @@
   apt:
     update_cache: yes
 
+- name: Configure auto patching
+  copy:
+    src: 50-unattended-upgrades
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+
 - name: Patch the system
   apt:
     name: "*"
