@@ -34,8 +34,8 @@
       - 81:80
     labels:
       traefik.enable: "true"
-      traefik.http.routers.traefik.rule: "Host(`{{ dns_name }}`)"
-      traefik.http.routers.traefik.entrypoints: "websecure"
-      traefik.http.routers.traefik.tls.certresolver: "cloudflare"
+      traefik.http.routers.filebrowser.rule: "Host(`{{ filebrowser }}`)"
+      traefik.http.routers.filebrowser.entrypoints: "websecure"
+      traefik.http.routers.filebrowser.tls.certresolver: "cloudflare"
     networks:
       - name: proxy

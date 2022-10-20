@@ -1,0 +1,25 @@
+- name: Create Jellyfin directory
+  file:
+    path: /opt/dockervolumes/jellyfin
+    state: directory
+    recurse: yes
+
+- name: Starting Jellyfin container
+  docker_container:
+    name: jellyfin
+    image: lscr.io/linuxserver/jellyfin
+    state: started
+    restart_policy: unless-stopped
+    ports:
+      - 8096:8096
+    volumes:
+      - /opt/dockervolumes/jellyfin/library:/config
+      - /opt/dockervolumes/jellyfin/tvshows:/data/tvshows
+      - /opt/dockervolumes/jellyfin/movies:/data/movies
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.jellyfin.rule: "Host(`{{ jellyfin }}`)"
+      traefik.http.routers.jellyfin.entrypoints: "websecure"
+      traefik.http.routers.jellyfin.tls.certresolver: "cloudflare"
+    networks:
+      - name: proxy

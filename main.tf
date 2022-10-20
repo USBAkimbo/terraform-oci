@@ -26,7 +26,8 @@ variable "net_subnet" {}
 # Cloudflare vars
 variable "cf_api_token" {}
 variable "cf_zone_id" {}
-variable "cf_dns_record" {}
+variable "cf_dns_filebrowser" {}
+variable "cf_dns_jellyfin" {}
 
 # Configure provider version
 terraform {
@@ -185,14 +186,23 @@ resource "null_resource" "ansible" {
 
   # Call Ansible to configure the VM
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u ubuntu -i '${oci_core_instance.vm.public_ip},' -b ansible-config.yml --ask-vault-pass"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u ubuntu -i '${oci_core_instance.vm.public_ip},' -b ansible-config.yml --vault-password-file ./ansible-vault-key"
   }
 }
 
 # Create DNS A record in Cloudflare for Filebrowser
 resource "cloudflare_record" "filebrowser-cloud" {
   zone_id = var.cf_zone_id
-  name    = var.cf_dns_record
+  name    = var.cf_dns_filebrowser
+  value   = oci_core_instance.vm.public_ip
+  type    = "A"
+  ttl     = 300
+}
+
+# Create DNS A record in Cloudflare for Filebrowser
+resource "cloudflare_record" "jellyfin-cloud" {
+  zone_id = var.cf_zone_id
+  name    = var.cf_dns_jellyfin
   value   = oci_core_instance.vm.public_ip
   type    = "A"
   ttl     = 300
