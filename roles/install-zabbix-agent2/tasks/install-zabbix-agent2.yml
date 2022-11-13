@@ -1,0 +1,47 @@
+- name: Copy Zabbix package
+  copy:
+    src: zabbix-release_6.2-2+ubuntu22.04_all.deb
+    dest: /tmp/zabbix-release_6.2-2+ubuntu22.04_all.deb
+
+- name: Install Zabbix package
+  apt:
+    deb: /tmp/zabbix-release_6.2-2+ubuntu22.04_all.deb
+
+- name: apt update
+  apt:
+    update_cache: yes
+
+- name: Install Zabbix Agent 2
+  apt:
+    name: zabbix-agent2
+    state: present
+
+- name: Configure Zabbix Agent 2
+  copy:
+    src: zabbix_agent2.conf
+    dest: /etc/zabbix/zabbix_agent2.conf
+    mode: 0644
+
+- name: Configure apt update checks
+  copy:
+    src: apt.conf
+    dest: /etc/zabbix/zabbix_agent2.d/apt.conf
+    mode: 0644
+
+- name: Configure zabbix agent PSK
+  copy:
+    src: zabbix-agent-psk
+    dest: /etc/zabbix/zabbix-agent-psk
+    decrypt: yes
+    mode: 0660
+
+- name: Add Zabbix user to Docker group
+  user:
+    name: zabbix
+    groups: docker
+
+- name: Restart and enable Zabbix Agent 2 service
+  systemd:
+    name: zabbix-agent2
+    state: restarted
+    enabled: yes
