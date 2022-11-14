@@ -5,6 +5,7 @@ Server={{ zabbix_server }}
 ServerActive={{ zabbix_server }}
 # Hostname=
 Include=/etc/zabbix/zabbix_agent2.d/*.conf
+TLSConnect=psk
 TLSAccept=psk
 TLSPSKIdentity={{ zabbix_agent_psk_id }}
 TLSPSKFile=/etc/zabbix/zabbix-agent-psk
