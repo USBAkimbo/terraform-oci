@@ -1,10 +1,11 @@
 - hosts: all
   roles:
-    - patch
-    - install-docker
-    - install-traefik
-    - install-filebrowser
-    - install-jellyfin
+    #- patch
+    #- install-docker
+    #- install-traefik
+    #- install-filebrowser
+    #- install-jellyfin
+    - install-zabbix-agent2
   vars:
     email: !vault |
           $ANSIBLE_VAULT;1.1;AES256

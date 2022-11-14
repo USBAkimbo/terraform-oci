@@ -17,22 +17,28 @@
     state: present
 
 - name: Configure Zabbix Agent 2
-  copy:
-    src: zabbix_agent2.conf
+  template:
+    src: zabbix_agent2.j2
     dest: /etc/zabbix/zabbix_agent2.conf
-    mode: 0644
+    owner: zabbix
+    group: zabbix
+    mode: 0660
 
 - name: Configure apt update checks
   copy:
     src: apt.conf
     dest: /etc/zabbix/zabbix_agent2.d/apt.conf
-    mode: 0644
+    owner: zabbix
+    group: zabbix
+    mode: 0660
 
 - name: Configure zabbix agent PSK
   copy:
     src: zabbix-agent-psk
     dest: /etc/zabbix/zabbix-agent-psk
     decrypt: yes
+    owner: zabbix
+    group: zabbix
     mode: 0660
 
 - name: Add Zabbix user to Docker group

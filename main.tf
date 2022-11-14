@@ -126,6 +126,17 @@ resource "oci_core_security_list" "firewallrules" {
       min = "443"
     }
   }
+
+  ingress_security_rules {
+    description = "Allow Zabbix Agent2 in"
+    protocol    = "6"
+    source      = "0.0.0.0/0"
+
+    tcp_options {
+      max = "10050"
+      min = "10050"
+    }
+  }
 }
 
 # Create internet gateway so VM has internet access
