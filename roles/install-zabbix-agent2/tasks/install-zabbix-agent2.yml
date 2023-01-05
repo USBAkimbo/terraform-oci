@@ -1,11 +1,18 @@
+- name: Check if Zabbix agent is already installed
+  stat:
+    path: /etc/zabbix
+  register: zabbix_installed
+
 - name: Copy Zabbix package
   copy:
     src: zabbix-release_6.2-2+ubuntu22.04_all.deb
     dest: /tmp/zabbix-release_6.2-2+ubuntu22.04_all.deb
+  when: not zabbix_installed.stat.exists
 
 - name: Install Zabbix package
   apt:
     deb: /tmp/zabbix-release_6.2-2+ubuntu22.04_all.deb
+  when: not zabbix_installed.stat.exists
 
 - name: apt update
   apt:
